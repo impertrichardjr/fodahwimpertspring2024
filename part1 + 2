@@ -1,0 +1,35 @@
+// Homework 2 - Part I SQL Queries
+
+// Question 1:
+
+SELECT stabr, count(*)
+FROM pls_fy2018_libraries
+GROUP BY stabr
+ORDER BY count(*) DESC;
+
+// Question 3:
+
+SELECT pls_fy2016_libraries.stabr, sum(pls_fy2016_libraries.wifisess), sum(pls_fy2017_libraries.wifisess), sum(pls_fy2018_libraries.wifisess)
+FROM pls_fy2016_libraries
+INNER JOIN pls_fy2017_libraries
+ON pls_fy2016_libraries.fscskey = pls_fy2017_libraries.fscskey
+INNER JOIN pls_fy2018_libraries
+ON pls_fy2017_libraries.fscskey = pls_fy2018_libraries.fscskey
+WHERE pls_fy2016_libraries.wifisess >= 0 AND pls_fy2017_libraries.wifisess >= 0 AND pls_fy2018_libraries.wifisess >= 0
+GROUP BY pls_fy2016_libraries.stabr;
+
+// Question 4:
+
+SELECT pls_fy2016_libraries.stabr, sum(pls_fy2016_libraries.visits), sum(pls_fy2017_libraries.visits), sum(pls_fy2018_libraries.visits)
+FROM pls_fy2016_libraries 
+INNER JOIN pls_fy2017_libraries
+ON pls_fy2016_libraries.fscskey = pls_fy2017_libraries.fscskey
+INNER JOIN pls_fy2018_libraries
+ON pls_fy2017_libraries.fscskey = pls_fy2018_libraries.fscskey
+GROUP BY pls_fy2016_libraries.stabr;
+
+
+
+
+
+
