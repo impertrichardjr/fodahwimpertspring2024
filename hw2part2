@@ -1,7 +1,8 @@
 // Homework 2 - Part II SQL Queries
 
+// To find county distribution year after year in specified states:
 
-SELECT DISTINCT pls_fy2016_libraries.county, pls_fy2016_libraries.stabr,
+SELECT DISTINCT pls_fy2016_libraries.county, pls_fy2016_libraries.stabr, 
 sum(pls_fy2016_libraries.visits), 
 sum(pls_fy2017_libraries.visits), 
 sum(pls_fy2018_libraries.visits) 
@@ -10,7 +11,27 @@ INNER JOIN pls_fy2017_libraries
 ON pls_fy2016_libraries.fscskey = pls_fy2017_libraries.fscskey
 INNER JOIN pls_fy2018_libraries
 ON pls_fy2017_libraries.fscskey = pls_fy2018_libraries.fscskey
-WHERE pls_fy2016_libraries.stabr = 'CA' or pls_fy2016_libraries.stabr = 'TX' or pls_fy2016_libraries.stabr = 'FL' or pls_fy2016_libraries.stabr = 'NY' or pls_fy2016_libraries.stabr = 'PA'
-AND (pls_fy2016_libraries.popu_lsa >= 700000 AND pls_fy2017_libraries.popu_lsa >= 700000 AND pls_fy2018_libraries.popu_lsa >= 700000)
+WHERE pls_fy2016_libraries.stabr in ('CA', 'TX', 'FL', 'NY', 'PA')
 GROUP BY DISTINCT pls_fy2016_libraries.county, pls_fy2016_libraries.stabr
 ORDER BY pls_fy2016_libraries.stabr;
+
+// Using population definition of 700,000 for qualification of big/small counties, categorization query:
+
+SELECT DISTINCT pls_fy2016_libraries.county, pls_fy2016_libraries.stabr,
+CASE WHEN (pls_fy2016_libraries.popu_lsa > 700000 
+		   AND pls_fy2017_libraries.popu_lsa > 700000 
+		   AND pls_fy2018_libraries.popu_lsa > 700000) THEN 'big county'
+	ELSE 'small county'
+END AS "County Size"
+FROM pls_fy2016_libraries
+INNER JOIN pls_fy2017_libraries
+ON pls_fy2016_libraries.fscskey = pls_fy2017_libraries.fscskey
+INNER JOIN pls_fy2018_libraries
+ON pls_fy2017_libraries.fscskey = pls_fy2018_libraries.fscskey
+WHERE pls_fy2016_libraries.stabr IN ('CA', 'TX', 'FL', 'NY', 'PA') 
+AND (pls_fy2016_libraries.popu_lsa >= 1
+		   AND pls_fy2017_libraries.popu_lsa >= 1 
+		   AND pls_fy2018_libraries.popu_lsa >= 1)
+GROUP BY DISTINCT pls_fy2016_libraries.county, pls_fy2016_libraries.stabr, "County Size", pls_fy2016_libraries.popu_lsa, pls_fy2017_libraries.popu_lsa, pls_fy2018_libraries.popu_lsa
+ORDER BY "County Size";
+
